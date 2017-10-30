@@ -26,7 +26,7 @@ namespace BethanysPieShop.Controllers
             PiesListViewModel piesListViewModel = new PiesListViewModel();
             piesListViewModel.Pies = _pieRepository.Pies;
 
-            piesListViewModel.CurrentCategory = "Cheese cakes";
+            //piesListViewModel.CurrentCategory = "Cheese cakes";
             return View(piesListViewModel);
         }
     }
