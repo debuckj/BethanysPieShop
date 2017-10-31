@@ -36,11 +36,14 @@ namespace BethanysPieShop
 
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IPieRepository, PieRepository>();
-            // other options
-            //services.AddSingleton();
-            //services.AddScoped();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<ShoppingCart>(sp => ShoppingCart.GetCart(sp));
+            services.AddTransient<IOrderRepository, OrderRepository>();
 
             services.AddMvc();
+
+            services.AddMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +54,20 @@ namespace BethanysPieShop
                 app.UseDeveloperExceptionPage();    // showing expections in browser
                 app.UseStatusCodePages();           // handle response codes 400-600
                 app.UseStaticFiles();               // selfexpl
-                app.UseMvcWithDefaultRoute();       // later
+                app.UseSession();
+                //app.UseMvcWithDefaultRoute();       // later
+
+                app.UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "categoryfilter",
+                        template: "Pie/{action}/{category?}",
+                        defaults: new { Controller = "Pie", action = "List" });
+
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
+                });
 
                 DbInitializer.Seed(app);
             }
