@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BethanysPieShop.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BethanysPieShop.Controllers
 {
@@ -18,13 +19,14 @@ namespace BethanysPieShop.Controllers
             _shoppingCart = shoppingCart;
         }
 
+        [Authorize]
         public IActionResult Checkout()
         {
             return View();
         }
 
-
         [HttpPost]
+        [Authorize]
         public IActionResult Checkout(Order order)
         {
             var items = _shoppingCart.GetShoppingCartItems();

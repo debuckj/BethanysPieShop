@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using BethanysPieShop.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace BethanysPieShop
 {
@@ -34,6 +34,9 @@ namespace BethanysPieShop
             services.AddDbContext<AppDbContext>(options => 
                 options.UseSqlServer(_configurationRoot.GetConnectionString("DefaultConnection")));
 
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
+
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IPieRepository, PieRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -54,9 +57,12 @@ namespace BethanysPieShop
                 app.UseDeveloperExceptionPage();    // showing expections in browser
                 app.UseStatusCodePages();           // handle response codes 400-600
                 app.UseStaticFiles();               // selfexpl
-                app.UseSession();
-                //app.UseMvcWithDefaultRoute();       // later
 
+                app.UseSession();
+                app.UseIdentity();                // deprecated > UseAuthentication instead
+                //app.UseAuthentication();
+
+                //app.UseMvcWithDefaultRoute();     // overridden
                 app.UseMvc(routes =>
                 {
                     routes.MapRoute(
