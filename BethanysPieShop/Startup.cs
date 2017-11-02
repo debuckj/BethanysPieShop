@@ -56,27 +56,33 @@ namespace BethanysPieShop
             {
                 app.UseDeveloperExceptionPage();    // showing expections in browser
                 app.UseStatusCodePages();           // handle response codes 400-600
-                app.UseStaticFiles();               // selfexpl
-
-                app.UseSession();
-                app.UseIdentity();                // deprecated > UseAuthentication instead
-                //app.UseAuthentication();
-
-                //app.UseMvcWithDefaultRoute();     // overridden
-                app.UseMvc(routes =>
-                {
-                    routes.MapRoute(
-                        name: "categoryfilter",
-                        template: "Pie/{action}/{category?}",
-                        defaults: new { Controller = "Pie", action = "List" });
-
-                    routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
-                });
-
-                DbInitializer.Seed(app);
             }
+            else
+            {
+                app.UseExceptionHandler("/AppException");
+            }
+
+            app.UseStaticFiles();               // selfexpl
+
+            app.UseSession();
+            app.UseIdentity();                // deprecated > UseAuthentication instead
+            //app.UseAuthentication();
+
+            //app.UseMvcWithDefaultRoute();     // overridden
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "categoryfilter",
+                    template: "Pie/{action}/{category?}",
+                    defaults: new { Controller = "Pie", action = "List" });
+
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            DbInitializer.Seed(app);
+            
 
             /*
             app.Run(async (context) =>
